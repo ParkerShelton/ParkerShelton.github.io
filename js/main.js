@@ -34,25 +34,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const success = form.querySelector(".form-success");
       const input = form.querySelector("input[type='email']");
       const email = input ? input.value : "";
+      const showMsg = (msg) => {
+        if (!success) return;
+        success.style.display = "block";
+        success.textContent = msg;
+      };
       if (NEWSLETTER_ENDPOINT) {
         try {
-          // Kit's subscribe field is "email_address". no-cors guarantees the
-          // request reaches Kit; we can't read the (opaque) response, so we
-          // show an optimistic confirmation.
-          await fetch(NEWSLETTER_ENDPOINT, {
+          // Kit allows cross-origin JSON posts (access-control-allow-origin: *)
+          // and returns { status: "success" }. Field name is "email_address".
+          const response = await fetch(NEWSLETTER_ENDPOINT, {
             method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({ email_address: email }),
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ email_address: email }),
           });
+          const result = await response.json();
+          if (result.status === "success") {
+            showMsg(`Thanks! We'll be in touch at ${email}.`);
+            form.reset();
+          } else {
+            showMsg("Hmm, that didn't go through — please try again.");
+          }
         } catch (err) {
-          /* show the confirmation regardless of network hiccups */
+          showMsg("Hmm, that didn't go through — please try again.");
         }
+        return;
       }
-      if (success) {
-        success.style.display = "block";
-        success.textContent = `Thanks! We'll be in touch at ${email}.`;
-      }
+      // Demo fallback (no endpoint configured)
+      showMsg(`Thanks! We'll be in touch at ${email}.`);
       form.reset();
     });
   });
