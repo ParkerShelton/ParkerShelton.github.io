@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // NEWSLETTER → Kit (parker-shelton.kit.com). Paste your form's action URL here.
   // Get it from Kit → your form → Embed → HTML; it looks like:
   //   https://app.kit.com/forms/XXXXXXX/subscriptions
-  const NEWSLETTER_ENDPOINT = "";
+  const NEWSLETTER_ENDPOINT = "https://app.kit.com/forms/9663277/subscriptions";
   // ──────────────────────────────────────────────────────────────────
 
   // Newsletter signup (Kit).
