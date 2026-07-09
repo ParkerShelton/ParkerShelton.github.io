@@ -104,8 +104,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Highlight the nav link for whichever section is currently in view.
+  // Only applies to in-page (#anchor) links, so book pages that link back to
+  // "../index.html#..." are safely ignored.
   const navLinks = document.querySelectorAll(".main-nav a");
   const sections = Array.from(navLinks)
+    .filter((link) => (link.getAttribute("href") || "").startsWith("#"))
     .map((link) => document.querySelector(link.getAttribute("href")))
     .filter(Boolean);
   if (navLinks.length && sections.length && "IntersectionObserver" in window) {
@@ -197,83 +200,4 @@ document.addEventListener("DOMContentLoaded", () => {
     revealEls.forEach((el) => revealObserver.observe(el));
   }
 
-  // Book detail modal: clicking a book cover opens a larger view of that
-  // book's cover, genre, blurb, and buy links, read straight from its card.
-  const modalOverlay = document.getElementById("book-modal-overlay");
-  if (modalOverlay) {
-    const modalCoverImg = document.getElementById("book-modal-cover-img");
-    const modalGenre = document.getElementById("book-modal-genre");
-    const modalTitle = document.getElementById("book-modal-title");
-    const modalStats = document.getElementById("book-modal-stats");
-    const modalDescription = document.getElementById("book-modal-description");
-    const modalBuyLinks = document.getElementById("book-modal-buy-links");
-    const modalCloseBtn = document.getElementById("book-modal-close");
-
-    const openModal = (card) => {
-      const coverImg = card.querySelector(".book-cover img");
-      const fullDescription = card.querySelector(".book-full-description");
-      const stats = card.querySelectorAll(".book-stats li");
-      if (modalCoverImg && coverImg) {
-        modalCoverImg.src = coverImg.src;
-        modalCoverImg.alt = coverImg.alt;
-      }
-      modalGenre.textContent = card.querySelector(".book-genre")?.textContent || "";
-      modalTitle.textContent = card.querySelector("h3")?.textContent || "";
-      modalStats.innerHTML = "";
-      stats.forEach((stat) => {
-        const li = document.createElement("li");
-        li.textContent = stat.textContent;
-        modalStats.appendChild(li);
-      });
-      modalDescription.textContent =
-        fullDescription?.textContent || card.querySelector(".book-blurb")?.textContent || "";
-      modalBuyLinks.innerHTML = card.querySelector(".buy-links")?.innerHTML || "";
-      modalOverlay.classList.add("open");
-      document.body.style.overflow = "hidden";
-    };
-
-    const closeModal = () => {
-      modalOverlay.classList.remove("open");
-      document.body.style.overflow = "";
-    };
-
-    document.querySelectorAll(".book-cover").forEach((cover) => {
-      cover.addEventListener("click", () => {
-        const card = cover.closest(".book-card");
-        if (card) openModal(card);
-      });
-      cover.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          const card = cover.closest(".book-card");
-          if (card) openModal(card);
-        }
-      });
-    });
-
-    modalCloseBtn?.addEventListener("click", closeModal);
-    modalOverlay.addEventListener("click", (event) => {
-      if (event.target === modalOverlay) closeModal();
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && modalOverlay.classList.contains("open")) closeModal();
-    });
-  }
-
-  // Genre filter tabs on the books page.
-  const filterTabs = document.querySelectorAll(".filter-tab");
-  const filterCards = document.querySelectorAll("[data-genre]");
-  if (filterTabs.length && filterCards.length) {
-    filterTabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        filterTabs.forEach((t) => t.classList.remove("active"));
-        tab.classList.add("active");
-        const genre = tab.dataset.filter;
-        filterCards.forEach((card) => {
-          const matches = genre === "all" || card.dataset.genre === genre;
-          card.style.display = matches ? "" : "none";
-        });
-      });
-    });
-  }
 });
