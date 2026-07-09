@@ -5,3 +5,6 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Oversized original cover art (web-optimized JPGs are used on the site)
+images/*-cover.png

@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // book's cover, genre, blurb, and buy links, read straight from its card.
   const modalOverlay = document.getElementById("book-modal-overlay");
   if (modalOverlay) {
-    const modalCover = document.getElementById("book-modal-cover");
+    const modalCoverImg = document.getElementById("book-modal-cover-img");
     const modalGenre = document.getElementById("book-modal-genre");
     const modalTitle = document.getElementById("book-modal-title");
     const modalStats = document.getElementById("book-modal-stats");
@@ -210,10 +210,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalCloseBtn = document.getElementById("book-modal-close");
 
     const openModal = (card) => {
-      const cover = card.querySelector(".book-cover");
+      const coverImg = card.querySelector(".book-cover img");
       const fullDescription = card.querySelector(".book-full-description");
       const stats = card.querySelectorAll(".book-stats li");
-      modalCover.style.background = cover?.style.background || "";
+      if (modalCoverImg && coverImg) {
+        modalCoverImg.src = coverImg.src;
+        modalCoverImg.alt = coverImg.alt;
+      }
       modalGenre.textContent = card.querySelector(".book-genre")?.textContent || "";
       modalTitle.textContent = card.querySelector("h3")?.textContent || "";
       modalStats.innerHTML = "";
