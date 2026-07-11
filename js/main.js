@@ -21,10 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // CONTACT FORM → Web3Forms (free, unlimited). Live.
   const CONTACT_ACCESS_KEY = "2e00ba9b-4aed-44d0-9cff-a585a6f157a2";
   //
-  // NEWSLETTER → Kit (parker-shelton.kit.com). Paste your form's action URL here.
-  // Get it from Kit → your form → Embed → HTML; it looks like:
-  //   https://app.kit.com/forms/XXXXXXX/subscriptions
-  const NEWSLETTER_ENDPOINT = "https://app.kit.com/forms/9663277/subscriptions";
+  // NEWSLETTER → Kit. This is the form's action URL (from Kit → form → Embed → HTML).
+  // This form delivers the free Pink Bear Protocols bonus chapter to new subscribers.
+  const NEWSLETTER_ENDPOINT = "https://app.kit.com/forms/9671080/subscriptions";
   // ──────────────────────────────────────────────────────────────────
 
   // Newsletter signup (Kit).
@@ -50,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
           });
           const result = await response.json();
           if (result.status === "success") {
-            showMsg(`Thanks! We'll be in touch at ${email}.`);
+            showMsg("Thanks! Check your inbox to confirm — your free bonus chapter is on the way.");
             form.reset();
           } else {
             showMsg("Hmm, that didn't go through — please try again.");
